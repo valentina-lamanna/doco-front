@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  front:
+    container_name: doco-front
+    image: doco_front
+    build:
+      context: .
+    ports:
+      - 3000:3000
+    environment:
+      ENV_VARIABLE: production_server_only_variable
+      NEXT_PUBLIC_ENV_VARIABLE: production_public_variable
+      NEXT_TELEMETRY_DISABLED: 1
+      NEXT_PUBLIC_BACK_URL: "http://localhost"
+      NEXT_PUBLIC_BACK_PORT: 3001
+      NEXT_PUBLIC_FRONT_URL: "http://localhost"
+      NEXT_PUBLIC_FRONT_PORT: 3000
+    volumes:
+      - ./doco/src:/app/doco/src
+      - ./doco/public:/app/doco/public

@@ -1,0 +1,42 @@
+name: Trigger auto deployment for front
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/front-AutoDeployTrigger-f4fa1985-4db3-448f-8106-bfea8e93eb13.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.FRONT_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: acrdoco.azurecr.io
+          registryUsername: ${{ secrets.FRONT_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.FRONT_REGISTRY_PASSWORD }}
+          containerAppName: front
+          resourceGroup: doco
+          imageToBuild: acrdoco.azurecr.io/front:${{ github.sha }}
+          
+
+     
+
